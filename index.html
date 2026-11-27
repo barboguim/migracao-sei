@@ -1,0 +1,419 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Migração e-CIGA → SEI — nota técnica operacional · UDU/SMU Niterói</title>
+<style>
+  :root{
+    --bg:#141413;
+    --surface:#1c1b1a;
+    --surface-2:#232220;
+    --text:#e8e6e1;
+    --muted:#a19d94;
+    --accent:#d97757;
+    --accent-dim:#8a4d36;
+    --border:#332f2b;
+    --ok:#7fa87f;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:"Inter","Segoe UI Variable Text","Segoe UI",-apple-system,BlinkMacSystemFont,Roboto,Helvetica,Arial,sans-serif;
+    font-size:16px;
+    line-height:1.65;
+    font-feature-settings:"kern" 1,"liga" 1,"tnum" 1;
+  }
+  .wrap{max-width:860px;margin:0 auto;padding:56px 32px 96px}
+
+  header{border-bottom:1px solid var(--border);padding-bottom:28px;margin-bottom:40px}
+  h1{
+    font-size:30px;line-height:1.22;margin:0 0 10px;font-weight:650;letter-spacing:-.02em;
+  }
+  h1 .arrow{color:var(--accent)}
+  .meta{color:var(--muted);font-size:14px;margin:0}
+
+  h2{
+    font-size:13px;letter-spacing:.11em;text-transform:uppercase;color:var(--accent);
+    font-weight:650;margin:56px 0 4px;
+  }
+  h2 + .h2sub{font-size:23px;line-height:1.3;font-weight:620;margin:0 0 22px;letter-spacing:-.015em}
+  h3{font-size:17px;font-weight:620;margin:34px 0 10px;letter-spacing:-.01em}
+  p{margin:0 0 14px}
+  strong{font-weight:650;color:#f4f2ee}
+  a{color:var(--accent);text-decoration:none;border-bottom:1px solid var(--accent-dim)}
+  a:hover{border-bottom-color:var(--accent)}
+  code{
+    font-family:"JetBrains Mono",ui-monospace,SFMono-Regular,Consolas,monospace;
+    font-size:.87em;background:var(--surface-2);border:1px solid var(--border);
+    border-radius:4px;padding:1px 5px;color:#ddd8d0;
+  }
+  hr{border:0;border-top:1px solid var(--border);margin:48px 0}
+
+  ul,ol{margin:0 0 16px;padding-left:22px}
+  li{margin:0 0 8px}
+  li::marker{color:var(--muted)}
+
+  .tablewrap{overflow-x:auto;margin:0 0 22px;border:1px solid var(--border);border-radius:8px;background:var(--surface)}
+  table{border-collapse:collapse;width:100%;font-size:14px}
+  th,td{text-align:left;padding:10px 14px;border-bottom:1px solid var(--border);vertical-align:top}
+  th{
+    font-size:11.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);
+    font-weight:620;background:var(--surface-2);white-space:nowrap;
+  }
+  tr:last-child td{border-bottom:0}
+  td.num{font-variant-numeric:tabular-nums;white-space:nowrap}
+  .tag{
+    display:inline-block;font-size:11px;font-weight:700;letter-spacing:.04em;
+    border-radius:4px;padding:1px 6px;margin-right:6px;
+  }
+  .tag.a{background:rgba(217,119,87,.16);color:#e9956f;border:1px solid rgba(217,119,87,.35)}
+  .tag.b{background:rgba(127,168,127,.14);color:#92b892;border:1px solid rgba(127,168,127,.32)}
+  .tag.c{background:rgba(161,157,148,.13);color:#b4b0a7;border:1px solid rgba(161,157,148,.3)}
+  .late{color:#e08c6b}
+
+  .callout{
+    border-left:2px solid var(--accent);background:var(--surface);
+    padding:14px 18px;margin:0 0 20px;border-radius:0 8px 8px 0;
+  }
+  .callout p:last-child{margin-bottom:0}
+
+  .check{list-style:none;padding-left:0}
+  .check li{position:relative;padding-left:30px}
+  .check li::before{
+    content:"";position:absolute;left:0;top:6px;width:15px;height:15px;
+    border:1px solid #4a4540;border-radius:3px;background:var(--surface-2);
+  }
+
+  figure{margin:0 0 22px}
+  video{width:100%;display:block;border-radius:8px;border:1px solid var(--border);background:#000}
+  figcaption{color:var(--muted);font-size:13px;margin-top:8px}
+
+  footer{margin-top:64px;padding-top:20px;border-top:1px solid var(--border);color:var(--muted);font-size:13px}
+
+  @media print{
+    @page{margin:14mm}
+    html,body{background:var(--bg) !important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    .wrap{max-width:none;padding:0}
+    h2{break-after:avoid}
+    h3{break-after:avoid}
+    .tablewrap{break-inside:auto}
+    tr{break-inside:avoid}
+    figure{display:none}
+    a{border-bottom:0}
+    body{font-size:10.5pt;line-height:1.5}
+    table{font-size:9pt}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>Migração e-CIGA <span class="arrow">→</span> SEI<br>nota técnica operacional</h1>
+  <p class="meta">Departamento de Urbanismo — UDU/SMU Niterói · 27 de novembro de 2026</p>
+</header>
+
+<h2>Seção 1</h2>
+<p class="h2sub">Objeto</p>
+
+<p>Cada servidor conduz pessoalmente a transição dos processos do e-CIGA que estão sob sua
+responsabilidade. Em 27/11/2026 há <strong>23 processos do e-CIGA em aberto</strong> no registro de
+distribuição do UDU, em três situações:</p>
+
+<div class="tablewrap">
+<table>
+  <thead><tr><th>Situação</th><th>Processos</th><th>O que exige</th></tr></thead>
+  <tbody>
+    <tr><td><span class="tag a">A</span> autuados pela SMU, carga em caixa do UDU</td><td class="num">5</td><td>migrar para o SEI</td></tr>
+    <tr><td><span class="tag b">B</span> autuados por outro órgão, carga em caixa do UDU</td><td class="num">9</td><td>instruir e devolver à origem</td></tr>
+    <tr><td><span class="tag c">C</span> carga fora do UDU (outro órgão ou outro setor da SMU)</td><td class="num">9</td><td>conferência de baixa (seção 5)</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h3>Fundamento</h3>
+<ul>
+  <li><strong>Portaria SEXEC nº 044/2026</strong>, publicada no Diário Oficial de Niterói de 18/11/2026 —
+    <a href="https://diariooficial.niteroi.rj.gov.br/do/2026/11_Nov/18.pdf">consulta</a>.</li>
+  <li>Registro de distribuição do UDU no Portal, conferido processo a processo no e-CIGA em
+    27/11/2026: é essa conferência que indica em que caixa cada processo está hoje e quem o autuou.</li>
+</ul>
+
+<h3>Material de apoio</h3>
+<p>O vídeo institucional <strong>“Transição de processo — do e-CIGA para o SEI-Niterói”</strong>
+demonstra, na tela, o preenchimento da Certidão de Migração Digital. Não é fundamento da transição:
+é apoio para quem quiser ver o passo 2 executado antes de fazê-lo.</p>
+
+<figure>
+  <video controls preload="metadata" src="video-migracao-eciga-sei.mp4"></video>
+  <figcaption>Transição de processo — do e-CIGA para o SEI-Niterói · vídeo institucional.
+  Na versão impressa desta nota o vídeo não aparece; use o arquivo digital.</figcaption>
+</figure>
+
+<hr>
+
+<h2>Seção 2</h2>
+<p class="h2sub">Em qual situação está o seu processo</p>
+
+<p>Duas perguntas resolvem qualquer processo da lista.</p>
+<ol>
+  <li><strong>A carga está hoje em uma caixa do UDU no e-CIGA?</strong> Se não, situação C — o
+    processo não está conosco, mas exige a conferência de baixa da seção 5.</li>
+  <li><strong>Se está: quem autuou?</strong> SMU → situação A (a migração é nossa). Outro órgão →
+    situação B (instruir e devolver).</li>
+</ol>
+
+<hr>
+
+<h2>Seção 3 · Situação A</h2>
+<p class="h2sub">Migrar para o SEI</p>
+
+<p>Cinco processos: carga em caixa do UDU e autuação pela própria SMU. A migração cabe ao servidor
+responsável pelo processo.</p>
+
+<div class="tablewrap">
+<table>
+  <thead><tr><th>Processo</th><th>Responsável</th><th>Registrado com</th><th>Tipo processual no SEI</th><th>Parado há</th></tr></thead>
+  <tbody>
+    <tr><td class="num">9900173072/2025</td><td>Leandro</td><td>—</td><td>Certidão de Zoneamento</td><td class="num late">505 dias</td></tr>
+    <tr><td class="num">9900195009/2025</td><td>Agnis</td><td>Henrique</td><td>Certidão de Zoneamento</td><td class="num late">449 dias</td></tr>
+    <tr><td class="num">9900084985/2026</td><td>Igor</td><td>—</td><td>Certidão de Viabilidade</td><td class="num late">135 dias</td></tr>
+    <tr><td class="num">9900094419/2026</td><td>Igor</td><td>—</td><td>Certidão de Viabilidade</td><td class="num">28 dias</td></tr>
+    <tr><td class="num">9900089243/2026</td><td>Luiza</td><td>—</td><td>Legalização de Edificação Comercial Individual</td><td class="num">9 dias</td></tr>
+  </tbody>
+</table>
+</div>
+
+<p>Todos os cinco estão na caixa <strong>Zoneamento (UDU/SMU)</strong>.</p>
+
+<h3>Antes de começar</h3>
+<div class="callout">
+  <p><strong>A juntada da certidão no e-CIGA é irreversível na prática.</strong> Antes de preencher a
+  certidão, confira que o assunto do processo de origem corresponde ao <strong>tipo processual</strong>
+  da tabela acima — divergência é motivo para parar e levar o número à chefia — e se já existe
+  processo no SEI para este caso: se existir, trabalhe nele; se não, ele é aberto no passo 1.</p>
+</div>
+<p>A certidão cita dois processos — o de origem no e-CIGA e o novo no SEI —, então tenha os dois
+números à mão antes do passo 2.</p>
+<p><strong>Onde guardar o PDF da certidão.</strong> A certidão assinada é baixada no passo 4.
+Guarde-a em uma pasta local nomeada pelo <strong>número do processo no SEI</strong>, com o número de
+origem no nome do arquivo — por exemplo, uma pasta do processo novo contendo
+<code>certidao-migracao-9900173072-2025.pdf</code>. Uma pasta por processo, sem agrupar. É o seu
+comprovante de execução até a baixa no registro de distribuição.</p>
+
+<h3>Os cinco passos</h3>
+<ol>
+  <li><strong>Abrir o processo no SEI</strong> com o tipo processual correspondente ao assunto do
+    processo original no e-CIGA — a tabela acima traz o tipo de cada um.</li>
+  <li><strong>Incluir a Certidão de Migração Digital como primeira peça.</strong> O documento está no
+    catálogo de documentos do SEI. Preencha os três campos do modelo — informações do processo
+    migrado, referência ao processo de origem, conferência e conversão digital — e inclua os dois
+    links: o do processo original no e-CIGA e o do novo processo no SEI. Conclua o preenchimento só
+    depois de verificar a exatidão dos dados.</li>
+  <li><strong>Salvar, autenticar e assinar</strong> eletronicamente, nessa ordem, no próprio SEI. Só
+    avance depois de confirmar que a assinatura foi registrada.</li>
+  <li><strong>Baixar a certidão assinada em PDF</strong> e guardá-la na pasta do processo. O formato
+    PDF é obrigatório.</li>
+  <li><strong>Juntar o PDF ao processo original no e-CIGA.</strong> Essa juntada é o marco formal de
+    encerramento da tramitação no sistema. Confirme que está anexando no processo correto.</li>
+</ol>
+<p>A partir da juntada, nenhum novo ato ou encaminhamento deve ser feito no e-CIGA: a tramitação
+segue exclusivamente no SEI.</p>
+
+<h3>Documentos novos</h3>
+<p>Os documentos necessários à continuidade da instrução entram no processo do SEI,
+<strong>depois</strong> da certidão. A extração das peças históricas do e-CIGA para o SEI é
+facultativa e é decisão da unidade autuadora, não de cada servidor. Se for feita, use exclusivamente
+a opção “versão para impressão”, que gera QR Code.</p>
+
+<h3>Checklist de encerramento</h3>
+<ul class="check">
+  <li>Assunto de origem conferido contra o tipo processual</li>
+  <li>Certidão criada no SEI, como primeira peça</li>
+  <li>Dados conferidos, com os dois links</li>
+  <li>Documento autenticado e assinado</li>
+  <li>PDF baixado, guardado na pasta e anexado no processo correto do e-CIGA</li>
+  <li>Tramitação mantida somente no SEI</li>
+  <li>Registro de distribuição atualizado, com o novo número NIT</li>
+</ul>
+
+<hr>
+
+<h2>Seção 4 · Situação B</h2>
+<p class="h2sub">Instruir e devolver ao órgão de origem</p>
+
+<p>Nove processos estão na carga do UDU mas foram autuados por outro órgão (PGM, Procuradoria
+Fiscal, CGM, SMARHS). Neles o UDU é unidade consultada, não unidade autuadora.</p>
+
+<div class="callout">
+  <p><strong>Não abra processo no SEI para estes.</strong> Conclua a análise, produza a manifestação
+  e devolva o processo pelo mesmo caminho por onde ele chegou. A certidão de migração cabe a quem
+  autuou, porque é a unidade autuadora que decide sobre as peças históricas e responde pela
+  continuidade da instrução.</p>
+</div>
+
+<div class="tablewrap">
+<table>
+  <thead><tr><th>Processo</th><th>Responsável</th><th>Reg. com</th><th>Autuado por</th><th>Caixa no UDU</th><th>Devolver para</th><th>Parado há</th></tr></thead>
+  <tbody>
+    <tr><td class="num">9900069186/2024</td><td>Agnis</td><td>Henrique</td><td>SMARHS — Setor Protocolo</td><td>Localização</td><td>servidora da SMARHS que encaminhou</td><td class="num late">457 dias</td></tr>
+    <tr><td class="num">9900047284/2026</td><td>Ana Stefany</td><td>—</td><td>PGM — PPMU Patrimônio</td><td>Áreas Públicas</td><td>SMU — UGA Gabinete</td><td class="num late">212 dias</td></tr>
+    <tr><td class="num">9900242813/2025</td><td>Larissa</td><td>—</td><td>PGM — Procuradoria Fiscal</td><td>Localização</td><td>SMU — UDPE</td><td class="num late">157 dias</td></tr>
+    <tr><td class="num">9900020872/2026</td><td>Agnis</td><td>—</td><td>CGM — Ouvidoria</td><td>Logradouro</td><td>SMU — UGA Gabinete</td><td class="num late">132 dias</td></tr>
+    <tr><td class="num">9900228662/2025</td><td>Larissa</td><td>—</td><td>PGM — Procuradoria Fiscal</td><td>Localização</td><td>SMU — USPA Protocolo Geral</td><td class="num">92 dias</td></tr>
+    <tr><td class="num">9900062633/2026</td><td>em tratamento pela chefia</td><td>—</td><td>PGM — Núcleo de Apoio Adm.</td><td>UDU Departamento</td><td>SMU — ASSUGA</td><td class="num">87 dias</td></tr>
+    <tr><td class="num">9900238472/2025</td><td>Pedro</td><td>—</td><td>PGM — PPMU Patrimônio</td><td>Zoneamento</td><td>SMU — UDPE Diretoria</td><td class="num">38 dias</td></tr>
+    <tr><td class="num">9900006819/2025</td><td>Pedro</td><td>—</td><td>PGM — PPMU Patrimônio</td><td>Localização</td><td>SMU — ASSUGA</td><td class="num">17 dias</td></tr>
+    <tr><td class="num">9900036161/2026</td><td>Ana Paula</td><td>—</td><td>CGM — Ouvidoria</td><td>Localização</td><td>SMU — UDF Fiscalização de Obras</td><td class="num">2 dias</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h3>O que fazer em cada um</h3>
+<ol>
+  <li>Conclua a análise e lavre a manifestação do UDU no próprio e-CIGA.</li>
+  <li>Devolva o processo ao setor que o encaminhou — a coluna “Devolver para” indica qual.</li>
+  <li>Registre na observação do nosso sistema que o processo foi devolvido à origem e em que data,
+    para o registro deixar de mostrá-lo como pendente aqui.</li>
+</ol>
+
+<p><strong>Se não for possível concluir a análise, devolva assim mesmo.</strong> Falta de documento,
+exigência não cumprida, matéria fora da competência do UDU, pedido que depende de outro setor — em
+qualquer desses casos lavre a manifestação dizendo o que falta ou por que o UDU não pode responder,
+e devolva. O processo não pode ficar parado aqui esperando: a unidade autuadora precisa dele para
+migrar ao SEI.</p>
+
+<p>Quatro destes esperam há mais de 130 dias, e o mais antigo há 457. São os primeiros a tratar.</p>
+
+<p>Se o órgão autuador pedir que o UDU faça a migração, isso é decisão da chefia, não do servidor:
+encaminhe o pedido antes de abrir qualquer processo no SEI.</p>
+
+<hr>
+
+<h2>Seção 5 · Situação C</h2>
+<p class="h2sub">Carga fora do UDU: conferência de baixa</p>
+
+<p>Nove processos continuam abertos no registro de distribuição do UDU, mas a carga no e-CIGA está em
+outro órgão ou em outro setor da SMU. Pela consulta pública, o processo não está conosco.</p>
+
+<div class="callout">
+  <p>Essa informação vem da consulta pública do e-CIGA, que mostra o último trâmite e
+  <strong>não</strong> mostra se restou pendência nossa. Cada um destes nove exige uma
+  <strong>conferência de baixa, feita pelo próprio servidor responsável no registro</strong>.</p>
+</div>
+
+<h3>Conferência de baixa — por processo, pelo servidor responsável</h3>
+<ol>
+  <li>Abra o processo no e-CIGA <strong>com login</strong> e confirme a caixa atual e o último
+    trâmite.</li>
+  <li>Responda: <strong>o UDU deve alguma manifestação neste processo?</strong>
+    <ul>
+      <li><strong>Não deve nada</strong> → registre na observação do nosso sistema a data da
+        conferência e o setor onde o processo está, e dê baixa no registro de distribuição.</li>
+      <li><strong>Deve manifestação</strong> → solicite o retorno do processo ao UDU e comunique a
+        chefia. Ele passa a ser tratado como situação A ou B, conforme quem autuou.</li>
+    </ul>
+  </li>
+  <li>Se o último trâmite não apontar setor de destino, registre o que o e-CIGA mostra internamente
+    (pode ser arquivamento) e informe a chefia antes de dar baixa.</li>
+</ol>
+
+<div class="tablewrap">
+<table>
+  <thead><tr><th>Processo</th><th>Responsável no registro</th><th>Reg. com</th><th>Onde está, segundo o e-CIGA</th></tr></thead>
+  <tbody>
+    <tr><td class="num">9900083547/2026</td><td>Vitor</td><td>—</td><td>UDF — Fiscal Marcela</td></tr>
+    <tr><td class="num">9900035041/2026</td><td>Agnis</td><td>—</td><td>PGM — aguardando manifestação via SPA</td></tr>
+    <tr><td class="num">9900027121/2026</td><td>Agnis</td><td>Henrique</td><td>sem setor de destino — conferir com login</td></tr>
+    <tr><td class="num">9900179451/2025</td><td>Igor</td><td>—</td><td>SMU — Topografia</td></tr>
+    <tr><td class="num">9900089192/2026</td><td>Leonardo</td><td>—</td><td>SMU — UDPE Departamento Exigência</td></tr>
+    <tr><td class="num">9900004781/2026</td><td>Milena</td><td>—</td><td>sem setor de destino — conferir com login</td></tr>
+    <tr><td class="num">9900027426/2026</td><td>Larissa</td><td>—</td><td>SMU — ASSUGA Assessoria Jurídica</td></tr>
+    <tr><td class="num">9900038451/2023</td><td>Pedro</td><td>—</td><td>SMA — Gabinete da Administração</td></tr>
+    <tr><td class="num">9900028384/2026</td><td>Vitor</td><td>—</td><td>USPF — Arquivo da Fiscalização</td></tr>
+  </tbody>
+</table>
+</div>
+
+<p>Os dois sem setor de destino — <strong>9900027121/2026</strong> (Agnis) e
+<strong>9900004781/2026</strong> (Milena) — são os que mais pedem a conferência interna: a consulta
+pública não diz para onde foram. Cabe ao servidor responsável abrir o processo com login e informar
+o resultado à chefia.</p>
+
+<hr>
+
+<h2>Seção 6</h2>
+<p class="h2sub">Sua lista</p>
+
+<p>Procure seu nome. A letra antes de cada número indica a seção a seguir:
+<span class="tag a">A</span> migrar para o SEI · <span class="tag b">B</span> instruir e devolver à
+origem · <span class="tag c">C</span> conferência de baixa.</p>
+
+<div class="tablewrap">
+<table>
+  <thead><tr><th>Servidor</th><th>Processos</th><th>Total</th></tr></thead>
+  <tbody>
+    <tr><td>Agnis</td><td><span class="tag a">A</span>9900195009/2025 · <span class="tag b">B</span>9900020872/2026 · <span class="tag b">B</span>9900069186/2024 · <span class="tag c">C</span>9900027121/2026 · <span class="tag c">C</span>9900035041/2026</td><td class="num">5</td></tr>
+    <tr><td>Igor</td><td><span class="tag a">A</span>9900084985/2026 · <span class="tag a">A</span>9900094419/2026 · <span class="tag c">C</span>9900179451/2025</td><td class="num">3</td></tr>
+    <tr><td>Larissa</td><td><span class="tag b">B</span>9900228662/2025 · <span class="tag b">B</span>9900242813/2025 · <span class="tag c">C</span>9900027426/2026</td><td class="num">3</td></tr>
+    <tr><td>Pedro</td><td><span class="tag b">B</span>9900006819/2025 · <span class="tag b">B</span>9900238472/2025 · <span class="tag c">C</span>9900038451/2023</td><td class="num">3</td></tr>
+    <tr><td>Vitor</td><td><span class="tag c">C</span>9900028384/2026 · <span class="tag c">C</span>9900083547/2026</td><td class="num">2</td></tr>
+    <tr><td>Ana Paula</td><td><span class="tag b">B</span>9900036161/2026</td><td class="num">1</td></tr>
+    <tr><td>Ana Stefany</td><td><span class="tag b">B</span>9900047284/2026</td><td class="num">1</td></tr>
+    <tr><td>Leandro</td><td><span class="tag a">A</span>9900173072/2025</td><td class="num">1</td></tr>
+    <tr><td>Leonardo</td><td><span class="tag c">C</span>9900089192/2026</td><td class="num">1</td></tr>
+    <tr><td>Luiza</td><td><span class="tag a">A</span>9900089243/2026</td><td class="num">1</td></tr>
+    <tr><td>Milena</td><td><span class="tag c">C</span>9900004781/2026</td><td class="num">1</td></tr>
+  </tbody>
+</table>
+</div>
+
+<p>Processos registrados em nome de estagiário são conduzidos pelo analista responsável pela matéria;
+a coluna “Registrado com” das seções 3 a 5 mantém o registro de origem apenas para
+rastreabilidade.</p>
+
+<p>Se você tem um processo do e-CIGA em aberto que não aparece nesta tabela, avise: ele não está no
+registro de distribuição e por isso não foi conferido.</p>
+
+<hr>
+
+<h2>Seção 7</h2>
+<p class="h2sub">Recomendações</p>
+
+<ol>
+  <li><strong>Prioridade por tempo parado.</strong> Comece pelos quatro processos da situação B com
+    mais de 130 dias (9900069186/2024, 9900047284/2026, 9900242813/2025, 9900020872/2026) e pelos
+    dois da situação A com mais de 400 dias (9900173072/2025, 9900195009/2025).</li>
+  <li><strong>Conferência de baixa da situação C até sexta, 04/12/2026.</strong> Sem ela o registro
+    de distribuição continua a mostrar como pendentes processos que podem estar arquivados — ou a
+    esconder uma manifestação nossa ainda devida.</li>
+  <li><strong>Devolva mesmo sem análise concluída na situação B</strong>, e faça a devolução pelo
+    procedimento da seção 4: manifestação lavrada no e-CIGA dizendo o que falta, devolução ao setor
+    indicado na coluna “Devolver para” e registro da data na observação do nosso sistema. Devolver
+    sem manifestação ou por outro caminho obriga o processo a voltar, e é o mesmo que não
+    devolver.</li>
+  <li><strong>Nenhuma migração por dúvida.</strong> Em caso de dúvida sobre qual situação se aplica,
+    leve o número à chefia antes de agir: a juntada da certidão encerra a tramitação no e-CIGA e não
+    volta atrás.</li>
+  <li><strong>Atualize o registro de distribuição no mesmo dia em que agir no processo.</strong> São
+    três lançamentos possíveis, um por situação: na <strong>A</strong>, o novo número NIT do processo
+    no SEI; na <strong>B</strong>, “devolvido à origem” com a data e o setor; na <strong>C</strong>,
+    “conferido — carga em [setor]” com a data, e a baixa. Enquanto o lançamento não é feito, o
+    processo continua pendente no seu nome e volta a aparecer na próxima conferência, mesmo já
+    resolvido. O registro é a única fonte que diz se a transição terminou.</li>
+</ol>
+
+<footer>
+  Dúvidas sobre um processo específico: leve o número à chefia em vez de decidir sozinho qual
+  situação se aplica. Um processo migrado por engano não volta atrás — a juntada da certidão encerra
+  a tramitação no e-CIGA.
+</footer>
+
+</div>
+</body>
+</html>
+
